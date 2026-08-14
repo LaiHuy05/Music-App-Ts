@@ -6,4 +6,13 @@ block main
     .row 
       .col-12
         +box-head(pageTitle)
-          
+
+    .row
+      each topic in topics
+        .col-6.mb-3
+          .card
+            img(src=topic.avatar alt="Bolero")
+            .card-body
+              h5.card-title #{topic.title}
+              p.card-text #{topic.description}
+              a.btn.btn-primary(href=`/songs/${topic.slug}`) Xem chi tiết
