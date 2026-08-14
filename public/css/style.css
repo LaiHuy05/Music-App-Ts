@@ -1,3 +1,124 @@
-.test{
-  
+/* --- Reset & Cấu hình chung --- */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #121212; /* Nền tối chuẩn app nhạc */
+  color: #ffffff;
 }
+
+a {
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* --- Lưới Bootstrap cơ bản --- */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.col-3 {
+  width: 25%;
+}
+
+.col-9 {
+  width: 75%;
+}
+
+/* --- HEADER --- */
+.header {
+  background: linear-gradient(90deg, #181818 0%, #282828 100%);
+  padding: 15px 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Căn chỉnh Logo */
+.inner-logo a {
+  display: flex;
+  align-items: center;
+}
+
+.inner-logo img {
+  max-height: 45px;
+  transition: transform 0.3s ease;
+}
+
+.inner-logo img:hover {
+  transform: scale(1.05); /* Phóng to nhẹ khi di chuột vào */
+}
+
+/* Căn chỉnh Menu */
+.inner-menu {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.inner-menu ul {
+  display: flex;
+  gap: 35px;
+}
+
+/* Hiệu ứng link menu */
+.inner-menu a {
+  color: #b3b3b3;
+  font-weight: 600;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  transition: color 0.3s ease;
+  position: relative;
+  padding-bottom: 5px;
+}
+
+/* Hiệu ứng gạch chân chạy ngang bằng màu điểm nhấn (xanh neon/hồng) */
+.inner-menu a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #1db954; /* Màu xanh Spotify, mày đổi thành màu khác tuỳ ý */
+  transition: width 0.3s ease;
+}
+
+.inner-menu a:hover {
+  color: #ffffff;
+}
+
+.inner-menu a:hover::after {
+  width: 100%;
+}
+/* ---END HEADER --- */
+
+
+/* --- FOOTER --- */
+.footer {
+  background-color: #000000;
+  color: #7a7a7a;
+  text-align: center;
+  padding: 25px 0;
+  font-size: 13px;
+  border-top: 1px solid #222;
+  margin-top: 50px;
+  letter-spacing: 1px;
+}
+/*---END FOOTER ---  */
