@@ -277,8 +277,21 @@ ul {
   font-weight: 500;
 }
 
+.inner-action.inner-like{
+  cursor: pointer;
+}
+
+
+.singer-detail .inner-action.inner-like.active i{
+  font-weight: 900;
+}
+
+.singer-detail .inner-action.inner-like.active {
+  color: #0059ff; 
+}
+
 .inner-action i {
-  color: #1db954; /* Icon xanh lá điểm nhấn */
+  color: #0059ff; /* Icon xanh lá điểm nhấn */
   font-size: 16px;
 }
 
@@ -318,7 +331,7 @@ ul {
   
   /* Lắp motor cho đĩa quay: 10s một vòng, tốc độ đều (linear), quay vô hạn (infinite) */
   animation: spin 10s linear infinite; 
-  /* animation-play-state: paused; Mặc định dừng quay, chờ nhấn Play */
+  animation-play-state: paused; 
 }
 
 .inner-avatar img {
