@@ -277,6 +277,18 @@ ul {
   font-weight: 500;
 }
 
+.singer-detail .inner-action.inner-heart{
+  cursor: pointer;
+}
+
+.singer-detail .inner-action.inner-heart.active{
+  color: #b90000;
+}
+.singer-detail .inner-action.inner-heart.active i{
+  font-weight: 900;
+  color: #b90000;
+}
+
 .inner-action.inner-like{
   cursor: pointer;
 }
