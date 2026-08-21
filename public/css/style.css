@@ -173,74 +173,90 @@ ul {
    GIAO DIỆN DANH SÁCH BÀI HÁT (SONG ITEM)
 ========================================= */
 .song-item {
-  display: flex; /* Ma thuật ở đây: Ép ảnh và nội dung dàn hàng ngang */
-  align-items: center; /* Căn giữa theo chiều dọc */
-  background-color: #1e1e1e; /* Nền xám đen cho khối */
+  display: flex; 
+  align-items: center; 
+  background-color: #1e1e1e; 
   padding: 12px;
   border-radius: 8px;
   border: 1px solid #333;
   transition: background-color 0.3s ease;
   margin-bottom: 15px;
+  width: 100%; /* Ép khối này ăn full chiều ngang của cột col-6 */
+  box-sizing: border-box; /* Tính luôn cả padding vào width để ko bị tràn */
 }
 
-/* Đổi màu xám nhạt hơn tí khi rê chuột vào */
 .song-item:hover {
   background-color: #2a2a2a; 
 }
 
-/* Ép khung ảnh nhỏ gọn, vuông vắn bên trái */
 .inner-image {
-  width: 90px;
-  height: 90px;
+  width: 120px; /* Cho cái ảnh to ra thêm tí xíu nhìn cho rõ */
+  height: 120px; /* Vuông vức */
   border-radius: 6px;
   overflow: hidden;
-  flex-shrink: 0; /* Giữ nguyên size ảnh, không bị chữ chèn ép */
-  margin-right: 15px; /* Đẩy nội dung chữ cách ra một khúc */
+  flex-shrink: 0; 
+  margin-right: 15px; 
 }
 
 .inner-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Cắt ảnh ko bị méo */
+  object-fit: cover; 
 }
 
-/* Khu vực chữ bên phải */
+/* KHOẢNG NÀY QUAN TRỌNG NHẤT NÀY: Ép chữ không được tràn */
 .inner-content {
-  flex-grow: 1;
+  flex-grow: 1; /* Chiếm toàn bộ phần không gian còn lại bên phải ảnh */
   display: flex;
   flex-direction: column;
-  gap: 5px; /* Khoảng cách giữa các dòng chữ */
+  gap: 5px; 
+  overflow: hidden; /* Cực kỳ quan trọng: Nội dung thừa tao giấu mẹ đi */
 }
 
-/* Tiêu đề bài hát */
+/* Chống tràn cho tiêu đề bài hát */
 .inner-title a {
   color: #ffffff;
-  font-size: 16px;
+  font-size: 18px; /* Cho chữ to ra tí */
   font-weight: bold;
   transition: color 0.3s ease;
+  
+  /* Ma thuật cắt gọn chữ nếu tiêu đề quá dài: Cắt bằng dấu ... */
+  display: block; 
+  white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis; 
 }
 
 .inner-title a:hover {
-  color: #1db954; /* Di chuột vào đổi màu xanh lá */
+  color: #1db954; 
 }
 
-/* Chỉnh chung cho tên ca sĩ, lượt thích, thời gian */
+/* Mấy cái icon với chữ nhỏ bên dưới tao giữ nguyên của mày */
 .inner-singer, 
+.inner-heart, 
 .inner-like, 
 .inner-time {
-  color: #b3b3b3; /* Chữ xám cho đỡ chói */
+  color: #b3b3b3; 
   font-size: 13px;
   display: flex;
   align-items: center;
-  gap: 6px; /* Cách icon ra một tí cho thoáng */
+  gap: 6px; 
 }
 
-/* Tô màu xanh lá cho mấy cái icon luôn cho ngầu */
 .inner-singer i, 
 .inner-like i, 
 .inner-time i {
   color: #1db954; 
 }
+
+.song-item .inner-content .inner-heart.active {
+  color: red;
+}
+.song-item .inner-content .inner-heart.active i {
+  font-weight: 900;
+  color: red;
+}
+
 
 /* =========================================
    TRANG CHI TIẾT BÀI HÁT (SINGER DETAIL)
