@@ -126,3 +126,32 @@ export const favorite = async (req: Request, res: Response) => {
     message: "Cập nhật yêu thích thành công",
   })
 }
+
+//[PATCH] /songs/listen/:idSong
+export const listen = async (req: Request, res: Response) => {
+  const idSong: string = req.params.idSong;
+
+  const song = await Song.findOne({
+    _id: idSong,
+    status: "active",
+    deleted: false,
+  });
+
+  const listen: number = song.listen + 1;
+
+  await Song.updateOne({
+    _id: idSong,
+  }, {
+    listen: listen,
+  })
+
+  const songNew = await Song.findOne({
+    _id: idSong
+  })
+
+  res.json({
+    code: 200,
+    message: "Cập nhật thành công",
+    listen: songNew.listen,
+  });
+}
