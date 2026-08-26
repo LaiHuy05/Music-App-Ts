@@ -93,3 +93,12 @@ body {
   border-bottom: 2px solid #ddd;
   padding-bottom: 10px;
 }
+
+/* Thu nhỏ ảnh preview lúc upload */
+.image-preview {
+  width: 150px; /* Thích to hơn thì mày tăng lên 200px, 300px tùy ý */
+  height: auto;
+  margin-top: 15px; /* Đẩy cách cái ô "Chọn tệp" ra một tí cho thoáng */
+  border-radius: 8px; /* Bo góc tí cho đẹp */
+  display: block; 
+}
