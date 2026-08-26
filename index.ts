@@ -7,6 +7,7 @@ import clientRoutes from './routes/client/index-route';
 import adminRoutes from './routes/admin/index-route';
 import { systemconfig } from './config/config';
 import path from 'path';
+// import bodyParser = require('body-parser');
 
 dotenv.config();
 
@@ -14,6 +15,10 @@ database.connect();
 
 const app: Express = express();
 const port: number | string = process.env.PORT || 3000;  
+
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
 
 app.use(express.static("public"));
 
