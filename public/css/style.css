@@ -446,7 +446,7 @@ ul {
 }
 
 /* =========================================
-   6. GIAO DIỆN APLAYER (Ép theo tông tối)
+   6. GIAO DIỆN APLAYER (Tông Dark Mode + Tân trang Lyric)
 ========================================= */
 .aplayer {
   background: transparent !important;
@@ -454,10 +454,40 @@ ul {
   margin: 0 !important;
 }
 
+/* Đã gộp chung, giữ lại height: auto để khung chữ tự giãn, không đè thanh tua */
 .aplayer .aplayer-info {
-  padding: 10px 0 0 0 !important;
+  padding: 10px !important;
+  height: auto !important; 
 }
 
+/* --- KHU VỰC LỜI BÀI HÁT (LRC) --- */
+.aplayer .aplayer-lrc {
+  position: relative !important; /* QUAN TRỌNG: Không cho đè lên thanh tua */
+  height: 80px !important; 
+  margin: 15px 0 !important;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+}
+
+.aplayer .aplayer-lrc p {
+  color: var(--text-sub) !important; 
+  font-size: 15px !important;
+  line-height: 28px !important;
+  font-weight: 500 !important;
+  transition: all 0.4s ease !important; 
+  opacity: 0.5;
+}
+
+.aplayer .aplayer-lrc p.aplayer-lrc-current {
+  color: var(--accent-color) !important; 
+  font-size: 18px !important; 
+  font-weight: 900 !important; 
+  opacity: 1;
+  transform: scale(1.05); 
+  text-shadow: 0 0 10px rgba(29, 185, 84, 0.4); 
+}
+
+/* --- KHU VỰC TEXT & THANH ĐIỀU KHIỂN --- */
 .aplayer .aplayer-info .aplayer-music .aplayer-title {
   color: var(--text-main) !important;
   font-size: 18px !important;
@@ -483,7 +513,6 @@ ul {
 .aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap .aplayer-bar .aplayer-played .aplayer-thumb {
   background: var(--text-main) !important;
 }
-
 /* =========================================
    7. FOOTER
 ========================================= */

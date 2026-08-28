@@ -1,5 +1,5 @@
 tinymce.init({
-  selector: 'textarea',
+  selector: 'textarea[textarea-mce]',
   plugins: 'lists link image table code help wordcount',
   file_picker_callback: (cb, value, meta) => {
     const input = document.createElement('input');

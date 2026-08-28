@@ -1,6 +1,7 @@
 import express, {Express} from 'express';
 import * as database from './config/database';
 import dotenv from 'dotenv';
+import methodOverride from "method-override"
 
 
 import clientRoutes from './routes/client/index-route';
@@ -18,6 +19,8 @@ const port: number | string = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+
+app.use(methodOverride("_method"))
 
 
 app.use(express.static("public"));
