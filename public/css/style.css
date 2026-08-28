@@ -320,6 +320,9 @@ ul {
   border-radius: 50px; /* Bo tròn các nút tương tác */
 }
 
+.singer-detail .inner-desc .inner-text{
+  white-space: pre;
+}
 /* =========================================
    FIX CẤP CỨU NÚT LIKE (THUMBS-UP)
 ========================================= */
