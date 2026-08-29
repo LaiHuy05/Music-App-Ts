@@ -3,6 +3,7 @@ import { dashboardRoute } from "./dashboard-route";
 import { systemconfig } from "../../config/config";
 import { topicRoute } from "./topic-route";
 import { songRoute } from "./song-route";
+import { uploadRoute } from "./upload-route";
 
 const adminRoutes = (app: Express): void => {
 
@@ -13,6 +14,8 @@ const adminRoutes = (app: Express): void => {
   app.use(`${PATH_ADMIN}/topics`, topicRoute)
 
   app.use(`${PATH_ADMIN}/songs`, songRoute)
+
+  app.use(`${PATH_ADMIN}/upload`, uploadRoute)
 
 };
 
