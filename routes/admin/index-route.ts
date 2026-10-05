@@ -1,22 +1,37 @@
-import { Express } from "express";
-import { dashboardRoute } from "./dashboard-route";
+import { Express, Router } from "express";
 import { systemconfig } from "../../config/config";
+import { requireAdmin, requirePermission } from "../../middlewares/auth.middleware";
+import { csrfProtection } from "../../middlewares/security.middleware";
+import { dashboardRoute } from "./dashboard-route";
 import { topicRoute } from "./topic-route";
 import { songRoute } from "./song-route";
+import { singerRoute } from "./singer-route";
+import { accountRoute } from "./account-route";
+import { userRoute } from "./user-route";
+import { roleRoute } from "./role-route";
+import { authRoute } from "./auth-route";
 import { uploadRoute } from "./upload-route";
+import * as settingController from "../../controllers/admin/setting-controller";
+import * as myAccountController from "../../controllers/admin/my-account-controller";
 
 const adminRoutes = (app: Express): void => {
-
-  const PATH_ADMIN = `/${systemconfig.prefixAdmin}`
-
-  app.use(`${PATH_ADMIN}/dashboard`, dashboardRoute);
-
-  app.use(`${PATH_ADMIN}/topics`, topicRoute)
-
-  app.use(`${PATH_ADMIN}/songs`, songRoute)
-
-  app.use(`${PATH_ADMIN}/upload`, uploadRoute)
-
+  const prefix = `/${systemconfig.prefixAdmin}`;
+  app.use(`${prefix}/auth`, authRoute);
+  const router = Router();
+  router.use(requireAdmin);
+  router.get("/", (_req, res) => res.redirect(`${prefix}/${res.locals.can("dashboard_view") ? "dashboard" : "my-account"}`));
+  router.use("/dashboard", requirePermission("dashboard_view"), dashboardRoute);
+  router.use("/topics", topicRoute);
+  router.use("/songs", songRoute);
+  router.use("/singers", singerRoute);
+  router.use("/accounts", accountRoute);
+  router.use("/users", userRoute);
+  router.use("/roles", roleRoute);
+  router.use("/upload", uploadRoute);
+  router.get("/settings/general", requirePermission("settings_view"), settingController.general);
+  router.patch("/settings/general", requirePermission("settings_edit"), csrfProtection, settingController.generalPatch);
+  router.get("/my-account", myAccountController.index);
+  router.patch("/my-account", csrfProtection, myAccountController.editPatch);
+  app.use(prefix, router);
 };
-
 export default adminRoutes;

@@ -1,0 +1,25 @@
+extends ../../layouts/default.pug
+include ../../mixins/song-card.pug
+
+block main
+  .container.py-4
+    section.home-intro
+      h1= settings.websiteName
+      p= settings.description
+    section.mt-4(data-home-topics)
+      .d-flex.justify-content-between.align-items-center.mb-3
+        h2.mb-0 Chủ đề nổi bật
+        a.btn.btn-outline-primary(href="/topics") Xem thêm
+      if !topics.length
+        p.text-muted Chưa có chủ đề.
+      .row
+        each topic in topics
+          .col-md-4.col-12.mb-3
+            a.topic-card(href=`/songs/${topic.slug}`)
+              img(src=topic.avatar || settings.logo alt=topic.title loading="lazy")
+              h3= topic.title
+    .row.mt-4
+      .col-lg-6.col-12.mb-4
+        +ranking("Top 10 bài hát nhiều lượt thích nhất", topLiked, "like")
+      .col-lg-6.col-12.mb-4
+        +ranking("Top 10 bài hát nhiều lượt nghe nhất", topListened, "listen")

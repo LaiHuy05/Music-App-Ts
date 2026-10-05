@@ -4,7 +4,7 @@
     {
       "src": "dist/index.js",
       "use": "@vercel/node",
-      "config": { "includeFiles": ["dist/**"] }
+      "config": { "includeFiles": ["dist/**", "node_modules/tinymce/**", "node_modules/bootstrap/dist/**", "node_modules/jquery/dist/**", "node_modules/aplayer/dist/**", "node_modules/@fortawesome/fontawesome-free/css/**", "node_modules/@fortawesome/fontawesome-free/webfonts/**"] }
     }
   ],
   "routes": [

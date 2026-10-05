@@ -1,151 +1,146 @@
-// Aplayer
-const aplayer = document.querySelector('#aplayer');
+const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || "";
+const showNotice = (message) => {
+  let notice = document.querySelector("[data-client-notice]");
+  if (!notice) {
+    notice = document.createElement("div");
+    notice.className = "container alert alert-danger mt-3";
+    notice.setAttribute("role", "alert");
+    notice.dataset.clientNotice = "";
+    document.querySelector("main").prepend(notice);
+  }
+  notice.textContent = message;
+};
+const patch = async (url) => {
+  const response = await fetch(url, { method: "PATCH", headers: { "X-CSRF-Token": csrfToken, Accept: "application/json" } });
+  const data = await response.json();
+  if (response.status === 401) {
+    location.assign("/user/login?next=" + encodeURIComponent(location.pathname + location.search));
+    throw new Error("Vui lòng đăng nhập.");
+  }
+  if (!response.ok || data.code !== 200) throw new Error(data.message || "Không cập nhật được dữ liệu.");
+  return data;
+};
+
+// Preserve the existing APlayer flow and count one listen when playback ends.
+const playerText = value => String(value || "").replace(/[&<>]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[character]));
+const playerUrl = value => {
+  if (typeof value !== "string" || !value) return "";
+  try {
+    const url = new URL(value, location.origin);
+    return ["http:", "https:"].includes(url.protocol) ? url.href.replace(/'/g, "%27") : "";
+  } catch { return ""; }
+};
+const aplayer = document.querySelector("#aplayer");
 if (aplayer) {
-  let dataSong = aplayer.getAttribute('data-song');
-  dataSong = JSON.parse(dataSong);
-
-  let dataSinger = aplayer.getAttribute('data-singer');
-  dataSinger = JSON.parse(dataSinger);
-
-  const ap = new APlayer({
-    container: aplayer,
-    lrcType: 1,
-    audio: [{
-        name: dataSong.title,
-        artist: dataSinger.fullName,
-        url: dataSong.audio,
-        cover: dataSong.avatar,
-        lrc: dataSong.lyrics
-    }],
-    autoplay: true, 
-  });
-
-  const avatar = document.querySelector('.singer-detail .inner-avatar');
-
-  ap.on('play', function() {
-    avatar.style.animationPlayState = 'running';
-  });
-
-  ap.on('pause', function() {
-    avatar.style.animationPlayState = 'paused';
-  })
-
-  ap.on('ended', function() {
-    const link = `/songs/listen/${dataSong._id}`;
-
-    const option = {
-      method: "PATCH",
-    }
-
-    fetch(link, option)
-      .then(res => res.json())
-      .then(data => {
-        const elementListenSpan = document.querySelector(".singer-detail .inner-listen span");
-        elementListenSpan.innerHTML = `${data.listen} lượt nghe`;
-      })
-  })
-
+  const song = JSON.parse(aplayer.dataset.song);
+  const singer = JSON.parse(aplayer.dataset.singer);
+  const avatar = document.querySelector(".singer-detail .inner-avatar");
+  const ended = async () => {
+    try {
+      const data = await patch("/songs/listen/" + song._id);
+      document.querySelector(".inner-listen span").textContent = data.listen + " lượt nghe";
+    } catch (error) { showNotice(error.message); }
+  };
+  if (window.APlayer) {
+    const player = new APlayer({ container: aplayer, lrcType: 1, autoplay: false, audio: [{ name: playerText(song.title), artist: playerText(singer.fullName), url: playerUrl(song.audio), cover: playerUrl(song.avatar), lrc: song.lyrics }] });
+    player.on("play", () => { avatar.style.animationPlayState = "running"; });
+    player.on("pause", () => { avatar.style.animationPlayState = "paused"; });
+    player.on("ended", ended);
+  } else {
+    const player = document.querySelector("[data-native-player]");
+    player.hidden = false;
+    player.addEventListener("ended", ended);
+  }
 }
-// End Aplayer  
 
-// Button like
 const buttonLike = document.querySelector("[button-like]");
-if(buttonLike){
-  buttonLike.addEventListener("click", () => {
-    const idSong = buttonLike.getAttribute("button-like");
-    const isActive = buttonLike.classList.contains("active");
+buttonLike?.addEventListener("click", async () => {
+  if (buttonLike.disabled) return;
+  buttonLike.disabled = true;
+  try {
+    const action = buttonLike.classList.contains("active") ? "dislike" : "like";
+    const data = await patch("/songs/like/" + action + "/" + buttonLike.getAttribute("button-like"));
+    buttonLike.querySelector("span").textContent = data.like + " thích";
+    buttonLike.classList.toggle("active", data.isLiked);
+    buttonLike.setAttribute("aria-pressed", String(data.isLiked));
+  } catch (error) { showNotice(error.message); }
+  finally { buttonLike.disabled = false; }
+});
 
-    const typeLike = isActive ? "dislike" : "like";
-
-    const link = `/songs/like/${typeLike}/${idSong}`;
-
-    const option = {
-      method: "PATCH",
-    }
-
-    fetch(link, option)
-      .then(res => res.json())
-      .then(data => {
-          const span = buttonLike.querySelector("span");
-          span.innerHTML = `${data.like} thích`;
-  
-          buttonLike.classList.toggle("active");
-        
-      })
-  })
-}
-// End Button like
-
-// Button favorite
-const listButtonFavorite = document.querySelectorAll("[button-favorite]");
-if(listButtonFavorite.length > 0){
-  listButtonFavorite.forEach((buttonFavorite)=> {
-    buttonFavorite.addEventListener("click", () => {
-      const idSong = buttonFavorite.getAttribute("button-favorite");
-      const isActive = buttonFavorite.classList.contains("active");
-  
-      const typeFavorite = isActive ? "unfavorite" : "favorite";
-  
-      const link = `/songs/favorite/${typeFavorite}/${idSong}`;
-  
-      const option = {
-        method: "PATCH",
+document.querySelectorAll("[button-favorite]").forEach(button => {
+  button.addEventListener("click", async () => {
+    if (button.disabled) return;
+    button.disabled = true;
+    try {
+      const action = button.classList.contains("active") ? "unfavorite" : "favorite";
+      const data = await patch("/songs/favorite/" + action + "/" + button.getAttribute("button-favorite"));
+      button.classList.toggle("active", data.isFavorite);
+      button.setAttribute("aria-pressed", String(data.isFavorite));
+      if (!data.isFavorite && button.dataset.removeCard) {
+        button.closest(".song-item").parentElement.remove();
+        const empty = document.querySelector("[data-favorite-empty]");
+        if (empty) empty.hidden = !!document.querySelector("[button-favorite]");
       }
-  
-      fetch(link, option)
-      .then(res => res.json())
-      .then(data => {
-        if(data.code === 200){
-          buttonFavorite.classList.toggle("active");
-        }
-      })
-    })
-  })
-}
-// End Button favorite
+    } catch (error) { showNotice(error.message); }
+    finally { button.disabled = false; }
+  });
+});
 
-// Search suggest
+// Debounce suggestions and build DOM with textContent so titles cannot inject HTML.
 const boxSearch = document.querySelector(".box-search");
-if(boxSearch){
-  const input = boxSearch.querySelector("input[name='keyword']")
-  const boxSuggest = boxSearch.querySelector(".inner-suggest")
-
-  input.addEventListener("keyup", () => {
-    const keyword = input.value;
-    
-    const link = `/search/suggest?keyword=${keyword}`;
-
-    fetch(link)
-      .then(res => res.json())
-      .then(data => {
-        const songs = data.songs
-        if(songs.length){
-          boxSuggest.classList.add("show")
-
-          const htmls = songs.map(song => {
-            return `
-              <a class="inner-item" href="/songs/detail/${song.slug}"
-                ><div class="inner-image" bis_skin_checked="1">
-                  <img
-                    src="${song.avatar}"
-                  />
-                </div>
-                <div class="inner-info" bis_skin_checked="1">
-                  <div class="inner-title" bis_skin_checked="1">${song.title}</div>
-                  <div class="inner-singer" bis_skin_checked="1">
-                    <i class="fa-solid fa-microphone-lines"></i> ${song.infoSinger.fullName}
-                  </div>
-                </div>
-              </a>
-            `
-          });
-
-          const boxList = boxSuggest.querySelector(".inner-list");
-          boxList.innerHTML = htmls.join("");
-        }else{
-          boxSuggest.classList.remove("show"); 
+if (boxSearch) {
+  const input = boxSearch.querySelector('input[name="keyword"]');
+  const suggest = boxSearch.querySelector(".inner-suggest");
+  const list = suggest.querySelector(".inner-list");
+  let timer, controller;
+  input.addEventListener("input", () => {
+    clearTimeout(timer);
+    controller?.abort();
+    suggest.classList.remove("show");
+    const keyword = input.value.trim();
+    if (!keyword) return;
+    timer = setTimeout(async () => {
+      controller = new AbortController();
+      try {
+        const response = await fetch("/search/suggest?keyword=" + encodeURIComponent(keyword), { signal: controller.signal });
+        if (!response.ok) return;
+        const data = await response.json();
+        list.replaceChildren();
+        for (const song of data.songs) {
+          const link = document.createElement("a");
+          link.className = "inner-item";
+          link.href = "/songs/detail/" + encodeURIComponent(song.slug);
+          const imageBox = document.createElement("div");
+          imageBox.className = "inner-image";
+          const image = document.createElement("img");
+          image.src = song.avatar || "/images/logo.png";
+          image.alt = song.title;
+          imageBox.append(image);
+          const info = document.createElement("div");
+          info.className = "inner-info";
+          const title = document.createElement("div");
+          title.className = "inner-title";
+          title.textContent = song.title;
+          const singer = document.createElement("div");
+          singer.className = "inner-singer";
+          singer.textContent = song.infoSinger.fullName;
+          info.append(title, singer);
+          link.append(imageBox, info);
+          list.append(link);
         }
-      })
-  })  
+        suggest.classList.toggle("show", data.songs.length > 0);
+      } catch (error) { if (error.name !== "AbortError") suggest.classList.remove("show"); }
+    }, 200);
+  });
+  document.addEventListener("click", event => { if (!boxSearch.contains(event.target)) suggest.classList.remove("show"); });
+  input.addEventListener("keydown", event => { if (event.key === "Escape") suggest.classList.remove("show"); });
 }
-// End Search suggest
+
+document.querySelectorAll("[upload-image]").forEach(box => {
+  let previewUrl;
+  box.querySelector("[upload-image-input]").addEventListener("change", event => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    const file = event.target.files[0];
+    if (file) { previewUrl = URL.createObjectURL(file); box.querySelector("[upload-image-preview]").src = previewUrl; }
+  });
+});

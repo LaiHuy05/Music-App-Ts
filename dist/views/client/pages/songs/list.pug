@@ -1,29 +1,11 @@
 extends ../../layouts/default.pug
-include ../../mixins/box-head.pug
+include ../../mixins/song-card.pug
 
-
-block main 
-  .container.my-3 
-    .row 
-      .col-12 
-        +box-head(pageTitle)
-    
+block main
+  .container.my-4
+    h1.h3.mb-4= pageTitle
+    if !songs.length
+      p.text-muted Chủ đề này chưa có bài hát.
     .row
       each song in songs
-        .col-6.mb-3
-          .song-item
-            .inner-image
-              a(href=`/songs/detail/${song.slug}`)
-                img(src=song.avatar, alt="Cắt Đôi Nỗi Sầu")
-            .inner-content
-              .inner-title
-                a(href=`/songs/detail/${song.slug}`) #{song.title}
-              .inner-singer
-                i.fa-solid.fa-microphone-lines
-                |  #{song.infoSinger.fullName}
-              .inner-like
-                i.fa-solid.fa-thumbs-up
-                |  #{song.like}
-              .inner-time
-                i.fa-regular.fa-clock
-                |  Hôm nay
+        +songCard(song)

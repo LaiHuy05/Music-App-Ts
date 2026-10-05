@@ -1,0 +1,13 @@
+extends ../../layouts/default.pug
+
+block main
+  h1= record[nameField]
+  .card.card-body
+    img.image-preview.mb-3(src=(record.avatar || record.avtar || settings.logo) alt=record[nameField])
+    p Trạng thái: #{record.status === "active" ? "Hoạt động" : "Dừng hoạt động"}
+    p Đường dẫn: #{record.slug}
+    .catalog-description!= record.description
+    .mt-3
+      if can(`${resource}_edit`)
+        a.btn.btn-warning.mr-2(href=`${basePath}/edit/${record.id}`) Sửa
+      a.btn.btn-secondary(href=basePath) Quay lại

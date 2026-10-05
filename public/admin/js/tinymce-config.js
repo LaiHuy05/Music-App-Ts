@@ -1,37 +1,22 @@
-tinymce.init({
-  selector: 'textarea[textarea-mce]',
-  images_upload_url: "/admin/upload",
-  image_title: true,
-  automatic_uploads: true,
-  file_picker_types: 'image',
-  plugins: 'lists link image table code help wordcount',
-  // file_picker_callback: (cb, value, meta) => {
-  //   const input = document.createElement('input');
-  //   input.setAttribute('type', 'file');
-  //   input.setAttribute('accept', 'image/*');
-
-  //   input.addEventListener('change', (e) => {
-  //     const file = e.target.files[0];
-
-  //     const reader = new FileReader();
-  //     reader.addEventListener('load', () => {
-  //       /*
-  //         Note: Now we need to register the blob in TinyMCEs image blob
-  //         registry. In the next release this part hopefully won't be
-  //         necessary, as we are looking to handle it internally.
-  //       */
-  //       const id = 'blobid' + (new Date()).getTime();
-  //       const blobCache =  tinymce.activeEditor.editorUpload.blobCache;
-  //       const base64 = reader.result.split(',')[1];
-  //       const blobInfo = blobCache.create(id, file, base64);
-  //       blobCache.add(blobInfo);
-
-  //       /* call the callback and populate the Title field with the file name */
-  //       cb(blobInfo.blobUri(), { title: file.name });
-  //     });
-  //     reader.readAsDataURL(file);
-  //   });
-
-  //   input.click();
-  // },
-});
+if (window.tinymce && document.querySelector("textarea[textarea-mce]")) {
+  const prefix = document.querySelector('meta[name="admin-prefix"]').content;
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+  tinymce.init({
+    selector: "textarea[textarea-mce]",
+    license_key: "gpl",
+    plugins: "lists link image table code help wordcount",
+    toolbar: "undo redo | blocks | bold italic | bullist numlist | link image table | code",
+    image_title: true,
+    automatic_uploads: true,
+    images_upload_handler: async (blobInfo) => {
+      const form = new FormData();
+      form.append("file", blobInfo.blob(), blobInfo.filename());
+      const response = await fetch("/" + prefix + "/upload", {
+        method: "POST", body: form, headers: { "X-CSRF-Token": csrfToken, Accept: "application/json" }
+      });
+      const data = await response.json();
+      if (!response.ok || !data.location) throw new Error(data.message || "Không tải được ảnh.");
+      return data.location;
+    }
+  });
+}

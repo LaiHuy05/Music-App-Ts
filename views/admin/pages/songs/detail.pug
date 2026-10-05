@@ -1,0 +1,19 @@
+extends ../../layouts/default.pug
+
+block main
+  h1= song.title
+  .card.card-body
+    img.image-preview.mb-3(src=song.avatar || settings.logo alt=song.title)
+    p Ca sĩ: #{singer ? singer.fullName : "Chưa cập nhật"}
+    p Chủ đề: #{topic ? topic.title : "Chưa cập nhật"}
+    p Trạng thái: #{song.status === "active" ? "Hoạt động" : "Dừng hoạt động"}
+    p #{song.like} lượt thích · #{song.listen} lượt nghe
+    audio.w-100.mb-3(controls src=song.audio)
+    h5 Mô tả
+    .catalog-description!= song.description
+    h5.mt-3 Lời bài hát
+    pre.lyrics= song.lyrics
+    .mt-3
+      if can("songs_edit")
+        a.btn.btn-warning.mr-2(href=`/${prefixAdmin}/songs/edit/${song.id}`) Sửa
+      a.btn.btn-secondary(href=`/${prefixAdmin}/songs`) Quay lại

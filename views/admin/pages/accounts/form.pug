@@ -1,0 +1,32 @@
+extends ../../layouts/default.pug
+
+block main
+  h1= pageTitle
+  form.card.card-body(action=record ? `${basePath}/edit/${record.id}?_method=PATCH` : `${basePath}/create` method="POST")
+    +csrfField()
+    +field("fullName", "Họ tên", record && record.fullName, "text", true)
+    +field("email", "Email", record && record.email, "email", true)
+    +field("phone", "Số điện thoại", record && record.phone)
+    +field("avatar", "URL ảnh đại diện", record && record.avatar)
+    +field("password", record ? "Mật khẩu mới (để trống nếu giữ nguyên)" : "Mật khẩu", "", "password", !record)
+    if resource === "accounts"
+      if record && record.isSuperAdmin
+        p.text-muted Tài khoản quản trị cao nhất có toàn quyền.
+        input(type="hidden" name="roleId" value=record.roleId)
+      else
+        .form-group
+          label(for="roleId") Nhóm quyền
+          select.form-control(name="roleId" id="roleId" required)
+            option(value="") -- Chọn nhóm quyền --
+            each role in roles
+              option(value=role.id selected=!!record && record.roleId === role.id)= role.title
+        if !roles.length
+          p.text-danger Hãy tạo nhóm quyền và phân quyền trước khi thêm admin.
+    if record && (record.isSuperAdmin || (resource === "accounts" && record.id === currentAdmin.id))
+      input(type="hidden" name="status" value="active")
+      p Trạng thái: Hoạt động
+    else
+      +statusField(record ? record.status : "active")
+    .form-group.mb-0
+      button.btn.btn-primary(type="submit") Lưu
+      a.btn.btn-secondary.ml-2(href=basePath) Quay lại

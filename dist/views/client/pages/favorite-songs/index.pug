@@ -1,30 +1,10 @@
 extends ../../layouts/default.pug
-include ../../mixins/box-head.pug
+include ../../mixins/song-card.pug
 
-block main 
-  .container.my-3 
-    .row 
-      .col-12 
-        +box-head(pageTitle)
-
+block main
+  .container.my-4
+    h1.h3.mb-4= pageTitle
+    p.text-muted(data-favorite-empty hidden=!!favoriteSongs.length) Bạn chưa lưu bài hát yêu thích nào.
     .row
       each item in favoriteSongs
-        .col-6.mb-3
-          .song-item
-            .inner-image
-              a(href=`/songs/detail/${item.infoSong.slug}`)
-                img(src=item.infoSong.avatar, alt=item.infoSong.title)
-            .inner-content
-              .inner-title
-                a(href=`/songs/detail/${item.infoSong.slug}`) #{item.infoSong.title}
-              .inner-singer
-                i.fa-solid.fa-microphone-lines
-                |  #{item.infoSinger.fullName}
-              .inner-heart.active(button-favorite=item.songId)
-                i.fa-regular.fa-heart
-                |  Yêu thích
-              .inner-time
-                i.fa-regular.fa-clock
-                |  Hôm nay
-
-        
+        +songCard(item.infoSong, true)

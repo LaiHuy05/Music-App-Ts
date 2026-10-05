@@ -1,0 +1,35 @@
+mixin songCard(song, favorite = false)
+  .col-md-6.col-12.mb-3
+    .song-item
+      .inner-image
+        a(href=`/songs/detail/${song.slug}`)
+          img(src=song.avatar || settings.logo alt=song.title loading="lazy")
+      .inner-content
+        .inner-title
+          a(href=`/songs/detail/${song.slug}`)= song.title
+        .inner-singer
+          i.fa-solid.fa-microphone-lines(aria-hidden="true")
+          |  #{song.infoSinger.fullName}
+        .inner-like
+          i.fa-solid.fa-thumbs-up(aria-hidden="true")
+          |  #{song.like || 0} thích · #{song.listen || 0} lượt nghe
+        if favorite
+          button.inner-heart.active.favorite-control(type="button" button-favorite=song.id data-remove-card="true")
+            i.fa-regular.fa-heart(aria-hidden="true")
+            |  Bỏ yêu thích
+
+mixin ranking(title, songs, metric)
+  section.ranking-section(data-ranking=metric)
+    h2= title
+    if !songs.length
+      p.text-muted Chưa có bài hát.
+    else
+      ol.rank-list
+        each song, index in songs
+          li.rank-item
+            span.rank-number= index + 1
+            img(src=song.avatar || settings.logo alt=song.title loading="lazy")
+            .rank-info
+              a(href=`/songs/detail/${song.slug}`)= song.title
+              small= song.infoSinger.fullName
+            span.rank-count #{song[metric] || 0} #{metric === "like" ? "thích" : "lượt nghe"}

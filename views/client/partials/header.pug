@@ -1,57 +1,30 @@
 header.header
   .container
     .row.align-items-center
-      .col-3
+      .col-lg-2.col-12
         .inner-logo
-          a(href="/")
-            img(src="/images/logo.png", alt="Logo")
-
-      .col-5
+          a(href="/" aria-label=settings.websiteName)
+            img(src=settings.logo alt=settings.websiteName)
+      .col-lg-4.col-12.my-2
         .box-search
-          form(
-            action="/search/result"
-            method="GET"
-          )
-            div(class="form-group d-flex mb-0")
-              input(
-                type="text"
-                placeholder="Nhập từ khóa..."
-                class="form-control"
-                name="keyword"
-                value=keyword
-              )
-              button(
-                type="submit"
-                class="btn btn-primary"
-              ) Tìm
+          form(action="/search/result" method="GET")
+            .form-group.d-flex.mb-0
+              input.form-control(type="search" placeholder="Tìm bài hát..." name="keyword" value=keyword maxlength="100" aria-label="Tìm bài hát" autocomplete="off")
+              button.btn.btn-primary(type="submit") Tìm
           .inner-suggest
             .inner-list
-              //- a(href=`/songs/detail/:slugSong` class="inner-item")
-              //-   .inner-image
-              //-     img(src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=400&q=80")
-              //-   .inner-info
-              //-     .inner-title Cắt đôi nỗi sầu
-              //-     .inner-singer
-              //-       <i class="fa-solid fa-microphone-lines"></i> Tăng Duy Tân
-              //- a(href=`/songs/detail/:slugSong` class="inner-item")
-              //-   .inner-image
-              //-     img(src="https://images.unsplash.com/photo-1520872024865-3ff2805d8bb3?w=400&q=80")
-              //-   .inner-info
-              //-     .inner-title Ngày Mai Người Ta Lấy Chồng
-              //-     .inner-singer
-              //-       <i class="fa-solid fa-microphone-lines"></i> Thành Đạt
-      .col-4
-        .inner-menu
+      .col-lg-6.col-12
+        nav.inner-menu(aria-label="Menu chính")
           ul
-            li
-              a(href="/") 
-                i.fa-solid.fa-house
-                | Trang chủ
-            li
-              a(href="/topics") 
-                i.fas.fa-music
-                | Chủ đề
-            li 
-              a(href="/favorite-songs") 
-                i.fas.fa-heart
-                | yêu thích
+            li: a(href="/") Trang chủ
+            li: a(href="/topics") Chủ đề
+            li: a(href="/favorite-songs") Yêu thích
+            if currentUser
+              li: a(href="/user/info")= currentUser.fullName
+              li
+                form(action="/user/logout" method="POST")
+                  +csrfField()
+                  button.nav-logout(type="submit") Đăng xuất
+            else
+              li: a(href="/user/login") Đăng nhập
+              li: a(href="/user/register") Đăng ký

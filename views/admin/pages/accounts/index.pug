@@ -1,0 +1,42 @@
+extends ../../layouts/default.pug
+
+block main
+  h1= pageTitle
+  .card.card-body
+    .d-flex.justify-content-between.flex-wrap
+      +filters(basePath)
+      if can(`${resource}_create`)
+        a.btn.btn-outline-success.mb-3(href=`${basePath}/create`) + Thêm tài khoản
+    .table-responsive
+      table.table.table-hover
+        thead
+          tr
+            th STT
+            th Họ tên
+            th Email
+            if resource === "accounts"
+              th Nhóm quyền
+            th Trạng thái
+            th Hành động
+        tbody
+          if !records.length
+            tr: td(colspan=resource === "accounts" ? 6 : 5) Chưa có tài khoản.
+          each item, index in records
+            tr
+              td= index + 1
+              td= item.fullName
+              td= item.email
+              if resource === "accounts"
+                - const assignedRole = roles.find(role => role.id === item.roleId);
+                td= item.isSuperAdmin ? "Quản trị cao nhất" : (assignedRole ? assignedRole.title : "Chưa phân quyền")
+              td
+                if can(`${resource}_edit`) && !item.isSuperAdmin && item.id !== currentAdmin.id
+                  +statusForm(`${basePath}/status/${item.id}`, item.status)
+                else
+                  span= item.status === "active" ? "Hoạt động" : "Dừng hoạt động"
+              td
+                a.btn.btn-secondary.btn-sm(href=`${basePath}/detail/${item.id}`) Chi tiết
+                if can(`${resource}_edit`) && (!item.isSuperAdmin || item.id === currentAdmin.id)
+                  a.btn.btn-warning.btn-sm.ml-1(href=`${basePath}/edit/${item.id}`) Sửa
+                if can(`${resource}_delete`) && !item.isSuperAdmin && item.id !== currentAdmin.id
+                  +deleteForm(`${basePath}/delete/${item.id}`)

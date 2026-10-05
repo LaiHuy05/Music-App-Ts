@@ -1,0 +1,15 @@
+extends ../../layouts/default.pug
+
+block main
+  .container.my-4
+    .client-auth.card.card-body
+      h1.h3.mb-4 Đăng nhập
+      form(action="/user/login" method="POST")
+        +csrfField()
+        input(type="hidden" name="next" value=next)
+        +field("email", "Email", "", "email", true)
+        +field("password", "Mật khẩu", "", "password", true)
+        button.btn.btn-primary.btn-block(type="submit") Đăng nhập
+      .d-flex.justify-content-between.mt-3
+        a(href="/user/register") Tạo tài khoản
+        a(href="/user/password/forgot") Quên mật khẩu?

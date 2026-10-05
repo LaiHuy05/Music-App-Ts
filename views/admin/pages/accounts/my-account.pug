@@ -1,0 +1,18 @@
+extends ../../layouts/default.pug
+
+block main
+  h1= pageTitle
+  form.card.card-body(action=`/${prefixAdmin}/my-account?_method=PATCH` method="POST")
+    +csrfField()
+    +field("fullName", "Họ tên", record.fullName, "text", true)
+    .form-group
+      label Email
+      input.form-control(type="email" value=record.email readonly)
+    +field("phone", "Số điện thoại", record.phone)
+    +field("avatar", "URL ảnh đại diện", record.avatar)
+    h5.mt-3 Đổi mật khẩu
+    p.text-muted Để trống các ô mật khẩu nếu chỉ cập nhật thông tin.
+    +field("currentPassword", "Mật khẩu hiện tại", "", "password")
+    +field("newPassword", "Mật khẩu mới", "", "password")
+    +field("confirmPassword", "Nhập lại mật khẩu mới", "", "password")
+    button.btn.btn-primary.align-self-start(type="submit") Lưu thay đổi

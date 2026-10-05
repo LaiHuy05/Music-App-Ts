@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 
 const topicSchema = new mongoose.Schema(
   {
-    title: String,
+    title: { type: String, required: true, trim: true },
     avatar: String,
     description: String,
-    status: String,
+    status: { type: String, enum: ["active", "inactive"], default: "active" },
     slug: String,
     deleted: {
       type: Boolean,

@@ -1,0 +1,30 @@
+extends ../../layouts/default.pug
+
+block main
+  h1= pageTitle
+  p Chọn quyền cho từng nhóm. Các thay đổi có hiệu lực ngay ở lần truy cập tiếp theo.
+  a.btn.btn-secondary.mb-3(href=`/${prefixAdmin}/roles`) Quản lý nhóm quyền
+  if !roles.length
+    .alert.alert-info Chưa có nhóm quyền. Hãy tạo nhóm trước.
+  else
+    form.card.card-body(action=`/${prefixAdmin}/roles/permissions?_method=PATCH` method="POST")
+      +csrfField()
+      each role in roles
+        input(type="hidden" name="roleIds[]" value=role.id)
+      .table-responsive
+        table.table.table-bordered.permission-table
+          thead
+            tr
+              th Chức năng
+              each role in roles
+                th= role.title
+          tbody
+            each group in permissionGroups
+              each action in group.actions
+                tr
+                  th(scope="row") #{group.title} · #{permissionLabels[action]}
+                  each role in roles
+                    td.text-center
+                      input(type="checkbox" name=`permissions[${role.id}][]` value=`${group.key}_${action}` checked=role.permissions.includes(`${group.key}_${action}`) disabled=!can("roles_edit") aria-label=`${role.title}: ${group.title} ${permissionLabels[action]}`)
+      if can("roles_edit")
+        button.btn.btn-primary.align-self-start(type="submit") Lưu phân quyền

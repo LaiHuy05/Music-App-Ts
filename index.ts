@@ -1,46 +1,13 @@
-import express, {Express} from 'express';
-import * as database from './config/database';
-import dotenv from 'dotenv';
-import methodOverride from "method-override"
-
-
-import clientRoutes from './routes/client/index-route';
-import adminRoutes from './routes/admin/index-route';
-import { systemconfig } from './config/config';
-import path from 'path';
-// import bodyParser = require('body-parser');
-
+import dotenv from "dotenv";
 dotenv.config();
+import { createApp } from "./app";
+import { connect } from "./config/database";
 
-database.connect();
+if (process.env.NODE_ENV === "production" && !process.env.SESSION_SECRET) throw new Error("SESSION_SECRET is required in production.");
+const app = createApp();
 
-const app: Express = express();
-const port: number | string = process.env.PORT || 3000;  
+if (require.main === module) {
+  connect().then(() => app.listen(process.env.PORT || 3000, () => console.log("Music App is running."))).catch(() => { console.error("Không kết nối được MongoDB. Kiểm tra MONGO_URL."); process.exitCode = 1; });
+}
 
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
-
-app.use(methodOverride("_method"))
-
-
-app.use(express.static(`${__dirname}/public`));
-
-app.set("views", `${__dirname}/views`);
-app.set("view engine", "pug");
-
-// Tiny MCE
-app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
-
-// App Local Variables
-app.locals.prefixAdmin = systemconfig.prefixAdmin;
-
-// ClientRoutes
-clientRoutes(app);
-
-// admin Routes
-adminRoutes(app);
-
-
-app.listen(port, () => {
-  console.log(`app listening on port ${port}`);
-});
+export default app;

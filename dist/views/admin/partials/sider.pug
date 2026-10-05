@@ -1,19 +1,21 @@
 .sider
-  .inner-menu
+  nav.inner-menu(aria-label="Quản trị")
     ul
-      li
-        a(href=`/${prefixAdmin}/dashboard`) Tổng quan
-      li
-        a(href=`/${prefixAdmin}/topics`) Quản lý chủ đề
-      li
-        a(href=`/${prefixAdmin}/songs`) Quản lý bài hát
-      li
-        a(href=`/${prefixAdmin}/singers`) Quản lý ca sĩ
-      li
-        a(href=`/${prefixAdmin}/roles/permissions`) Phân quyền
-      li
-        a(href=`/${prefixAdmin}/accounts`) Tài khoản admin
-      li
-        a(href=`/${prefixAdmin}/users`) Tài khoản user
-      li
-        a(href=`/${prefixAdmin}/settings/general`) Cài đặt chung
+      if can("dashboard_view")
+        li: a(href=`/${prefixAdmin}/dashboard`) Tổng quan
+      if can("topics_view")
+        li: a(href=`/${prefixAdmin}/topics`) Quản lý chủ đề
+      if can("songs_view")
+        li: a(href=`/${prefixAdmin}/songs`) Quản lý bài hát
+      if can("singers_view")
+        li: a(href=`/${prefixAdmin}/singers`) Quản lý ca sĩ
+      if can("accounts_view")
+        li: a(href=`/${prefixAdmin}/accounts`) Tài khoản admin
+      if can("users_view")
+        li: a(href=`/${prefixAdmin}/users`) Tài khoản user
+      if can("roles_view")
+        li: a(href=`/${prefixAdmin}/roles`) Nhóm quyền
+        li: a(href=`/${prefixAdmin}/roles/permissions`) Phân quyền
+      if can("settings_view")
+        li: a(href=`/${prefixAdmin}/settings/general`) Cài đặt chung
+      li: a(href=`/${prefixAdmin}/my-account`) Tài khoản của tôi

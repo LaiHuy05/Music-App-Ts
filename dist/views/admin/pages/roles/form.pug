@@ -1,0 +1,15 @@
+extends ../../layouts/default.pug
+
+block main
+  h1= pageTitle
+  form.card.card-body(action=role ? `/${prefixAdmin}/roles/edit/${role.id}?_method=PATCH` : `/${prefixAdmin}/roles/create` method="POST")
+    +csrfField()
+    +field("title", "Tên nhóm quyền", role && role.title, "text", true)
+    .form-group
+      label(for="description") Mô tả
+      textarea.form-control(id="description" name="description" rows="4")= role ? role.description : ""
+    +statusField(role ? role.status : "active")
+    p.text-muted Sau khi lưu, chọn các quyền cho nhóm trong Bảng phân quyền.
+    .form-group.mb-0
+      button.btn.btn-primary(type="submit") Lưu
+      a.btn.btn-secondary.ml-2(href=`/${prefixAdmin}/roles`) Quay lại

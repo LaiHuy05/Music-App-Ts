@@ -1,0 +1,14 @@
+extends ../../layouts/default.pug
+
+block main
+  .container.my-4
+    .client-auth.card.card-body
+      h1.h3.mb-4 Đăng ký
+      form(action="/user/register" method="POST")
+        +csrfField()
+        +field("fullName", "Họ tên", "", "text", true)
+        +field("email", "Email", "", "email", true)
+        +field("password", "Mật khẩu (ít nhất 8 ký tự)", "", "password", true)
+        +field("confirmPassword", "Nhập lại mật khẩu", "", "password", true)
+        button.btn.btn-primary.btn-block(type="submit") Đăng ký
+      a.mt-3(href="/user/login") Đã có tài khoản? Đăng nhập

@@ -1,48 +1,37 @@
 extends ../../layouts/default.pug
-include ../../mixins/box-head.pug
-
 
 block main
   .singer-detail
-    .container.my-3
-      .row
-        .col-12
-          .inner-title #{song.title}
-
-          .inner-actions
-            div(class="inner-action inner-time")
-              <i class="fa-regular fa-clock"></i> 20/10/2023
-            div(class="inner-action inner-singer")
-              <i class="fa-solid fa-microphone-lines"></i> #{singer.fullName}
-            div(class="inner-action inner-topic")
-              <i class="fa-solid fa-music"></i> #{topic.title}
-            div(class="inner-action inner-listen")
-              <i class="fa-solid fa-headphones"></i> 
-              span #{song.listen} lượt nghe
-            div(class="inner-action inner-like" button-like=song.id)
-              <i class="fa-regular fa-thumbs-up"></i> 
-              span #{song.like} thích
-            div(class=("inner-action inner-heart " + (song.isFavoriteSong ? "active" : "")) button-favorite=song.id)
-              <i class="fa-regular fa-heart"></i> Bài hát yêu thích
-
-          .inner-play
-            .inner-avatar
-              img(src=song.avatar, alt=song.title)
-            .inner-audio
-              //- audio(controls)
-              //-   source(src="./audio/catdoinoisau.mp3")
-              div(
-                id="aplayer" 
-                data-song = song
-                data-singer = singer 
-                )
-          
-          .inner-desc
-            .inner-label Mô tả
-            .inner-text
-              | !{song.description}
-          
-          .inner-desc
-            .inner-label Lời bài hát
-            .inner-text
-              | !{song.lyrics}
+    .container.my-4
+      h1.inner-title= song.title
+      .inner-actions
+        .inner-action.inner-time
+          i.fa-regular.fa-clock(aria-hidden="true")
+          |  #{song.createdAt ? new Date(song.createdAt).toLocaleDateString("vi-VN") : ""}
+        .inner-action.inner-singer
+          i.fa-solid.fa-microphone-lines(aria-hidden="true")
+          |  #{singer.fullName}
+        .inner-action.inner-topic
+          i.fa-solid.fa-music(aria-hidden="true")
+          |  #{topic.title}
+        .inner-action.inner-listen
+          i.fa-solid.fa-headphones(aria-hidden="true")
+          span  #{song.listen} lượt nghe
+        button.inner-action.inner-like(type="button" class=song.isLiked ? "active" : "" button-like=song.id aria-pressed=song.isLiked)
+          i.fa-regular.fa-thumbs-up(aria-hidden="true")
+          span  #{song.like} thích
+        button.inner-action.inner-heart(type="button" class=song.isFavoriteSong ? "active" : "" button-favorite=song.id aria-pressed=song.isFavoriteSong)
+          i.fa-regular.fa-heart(aria-hidden="true")
+          |  Bài hát yêu thích
+      .inner-play
+        .inner-avatar
+          img(src=song.avatar || settings.logo alt=song.title)
+        .inner-audio
+          #aplayer(data-song=song data-singer=singer)
+          audio(controls src=song.audio data-native-player hidden)
+      .inner-desc
+        .inner-label Mô tả
+        .inner-text!= song.description
+      .inner-desc
+        .inner-label Lời bài hát
+        pre.inner-text.lyrics= song.lyrics

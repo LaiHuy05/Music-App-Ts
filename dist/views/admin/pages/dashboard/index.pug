@@ -1,4 +1,25 @@
 extends ../../layouts/default.pug
 
-block main 
-  h1 Trang tổng quan
+block main
+  h1= pageTitle
+  .row
+    each item in [{label: "Chủ đề", value: stats.topics}, {label: "Bài hát", value: stats.songs}, {label: "Ca sĩ", value: stats.singers}, {label: "Admin", value: stats.accounts}, {label: "Người dùng", value: stats.users}, {label: "Lượt thích", value: stats.like}, {label: "Lượt nghe", value: stats.listen}]
+      .col-sm-6.col-lg-3.mb-3
+        .card.stat-card
+          .card-body
+            .text-muted= item.label
+            strong.stat-value= item.value.toLocaleString("vi-VN")
+  .card
+    .card-header Bài hát mới thêm
+    .card-body
+      if !recentSongs.length
+        p.text-muted Chưa có bài hát.
+      else
+        ul.list-group.list-group-flush
+          each song in recentSongs
+            li.list-group-item.d-flex.justify-content-between
+              if can("songs_view")
+                a(href=`/${prefixAdmin}/songs/detail/${song.id}`)= song.title
+              else
+                span= song.title
+              span= song.status === "active" ? "Hoạt động" : "Dừng hoạt động"

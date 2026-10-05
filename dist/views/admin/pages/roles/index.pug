@@ -1,0 +1,31 @@
+extends ../../layouts/default.pug
+
+block main
+  h1= pageTitle
+  .mb-3
+    if can("roles_create")
+      a.btn.btn-outline-success.mr-2(href=`/${prefixAdmin}/roles/create`) + Thêm nhóm quyền
+    a.btn.btn-primary(href=`/${prefixAdmin}/roles/permissions`) Bảng phân quyền
+  .card.card-body.table-responsive
+    table.table.table-hover
+      thead
+        tr
+          th Tên nhóm
+          th Mô tả
+          th Số quyền
+          th Trạng thái
+          th Hành động
+      tbody
+        if !roles.length
+          tr: td(colspan="5") Chưa có nhóm quyền.
+        each role in roles
+          tr
+            td= role.title
+            td= role.description
+            td= role.permissions.length
+            td= role.status === "active" ? "Hoạt động" : "Dừng hoạt động"
+            td
+              if can("roles_edit")
+                a.btn.btn-warning.btn-sm(href=`/${prefixAdmin}/roles/edit/${role.id}`) Sửa
+              if can("roles_delete")
+                +deleteForm(`/${prefixAdmin}/roles/delete/${role.id}`)

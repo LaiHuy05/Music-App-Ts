@@ -1,0 +1,38 @@
+extends ../../layouts/default.pug
+
+block main
+  h1= pageTitle
+  .card
+    .card-body
+      .d-flex.justify-content-between.flex-wrap
+        +filters(basePath)
+        if can(`${resource}_create`)
+          a.btn.btn-outline-success.mb-3(href=`${basePath}/create`) + Thêm mới
+      .table-responsive
+        table.table.table-hover
+          thead
+            tr
+              th STT
+              th Ảnh
+              th Tên
+              th Trạng thái
+              th Hành động
+          tbody
+            if !records.length
+              tr: td(colspan="5") Chưa có dữ liệu.
+            each item, index in records
+              tr
+                td= index + 1
+                td: img.table-avatar(src=(item.avatar || item.avtar || settings.logo) alt=item[nameField])
+                td= item[nameField]
+                td
+                  if can(`${resource}_edit`)
+                    +statusForm(`${basePath}/status/${item.id}`, item.status)
+                  else
+                    span= item.status === "active" ? "Hoạt động" : "Dừng hoạt động"
+                td
+                  a.btn.btn-secondary.btn-sm(href=`${basePath}/detail/${item.id}`) Chi tiết
+                  if can(`${resource}_edit`)
+                    a.btn.btn-warning.btn-sm.ml-1(href=`${basePath}/edit/${item.id}`) Sửa
+                  if can(`${resource}_delete`)
+                    +deleteForm(`${basePath}/delete/${item.id}`)

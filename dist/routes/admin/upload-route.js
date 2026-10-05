@@ -22,16 +22,18 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadRoute = void 0;
 const express_1 = require("express");
-const multer_1 = __importDefault(require("multer"));
-const router = (0, express_1.Router)();
 const controller = __importStar(require("../../controllers/admin/upload-controller"));
-const uploadCloud = __importStar(require("../../middlewares/admin/uploadCloud.middleware"));
-const upload = (0, multer_1.default)();
-router.post("/", upload.single("file"), uploadCloud.uploadSinger, controller.index);
-exports.uploadRoute = router;
+const uploadCloud_middleware_1 = require("../../middlewares/admin/uploadCloud.middleware");
+const upload_middleware_1 = require("../../middlewares/upload.middleware");
+const security_middleware_1 = require("../../middlewares/security.middleware");
+const http_1 = require("../../helpers/http");
+exports.uploadRoute = (0, express_1.Router)();
+exports.uploadRoute.post("/", (_req, res, next) => {
+    const resources = ["songs", "topics", "singers"];
+    if (!resources.some(resource => res.locals.can(`${resource}_create`) || res.locals.can(`${resource}_edit`)))
+        throw new http_1.HttpError(403, "Bạn không có quyền tải lên ảnh.");
+    next();
+}, upload_middleware_1.imageUpload.single("file"), security_middleware_1.csrfProtection, uploadCloud_middleware_1.uploadSinger, controller.index);

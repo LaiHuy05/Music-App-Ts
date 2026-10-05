@@ -1,0 +1,10 @@
+extends ../../layouts/auth.pug
+
+block main
+  h1.mb-4 Đăng nhập quản trị
+  form(action=`/${prefixAdmin}/auth/login` method="POST")
+    +csrfField()
+    +field("email", "Email", "", "email", true)
+    +field("password", "Mật khẩu", "", "password", true)
+    button.btn.btn-primary.btn-block(type="submit") Đăng nhập
+  a.d-block.mt-3(href="/") Về trang nghe nhạc

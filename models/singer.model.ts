@@ -1,11 +1,13 @@
-import { stat } from "fs";
 import mongoose from "mongoose";
 
 const singerSchema = new mongoose.Schema(
   {
-    fullName: String,
+    fullName: { type: String, required: true, trim: true },
+    avatar: String,
+    description: String,
+    // Keep the old misspelled field readable for existing records.
     avtar: String,
-    status: String,
+    status: { type: String, enum: ["active", "inactive"], default: "active" },
     slug: String,
     deleted: {
       type: Boolean,

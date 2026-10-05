@@ -1,31 +1,25 @@
-//Upload IMG
-const uploadImg = document.querySelector("[upload-image]");
-if(uploadImg){
-  const uploadImgInput = uploadImg.querySelector("[upload-image-input]")
-  const uploadImgPreview = uploadImg.querySelector("[upload-image-preview]")
-
-  uploadImgInput.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if(file){
-      uploadImgPreview.src = URL.createObjectURL(file);
+document.querySelectorAll(".js-confirm").forEach(form => {
+  form.addEventListener("submit", event => {
+    if (!confirm(form.dataset.confirm || "Bạn chắc chắn muốn xóa?")) event.preventDefault();
+  });
+});
+document.querySelectorAll("[upload-image]").forEach(box => {
+  let previewUrl;
+  box.querySelector("[upload-image-input]").addEventListener("change", event => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    const file = event.target.files[0];
+    if (file) { previewUrl = URL.createObjectURL(file); box.querySelector("[upload-image-preview]").src = previewUrl; }
+  });
+});
+document.querySelectorAll("[upload-audio]").forEach(box => {
+  let previewUrl;
+  box.querySelector("[upload-audio-input]").addEventListener("change", event => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    const file = event.target.files[0];
+    if (file) {
+      previewUrl = URL.createObjectURL(file);
+      box.querySelector("source").src = previewUrl;
+      box.querySelector("[upload-audio-play]").load();
     }
-  })
-}
-//End Upload IMG
-
-//Upload AUDIO
-const uploadAudio = document.querySelector("[upload-audio]");
-if(uploadAudio){
-  const uploadAudioInput = uploadAudio.querySelector("[upload-audio-input]")
-  const uploadAudioPlay = uploadAudio.querySelector("[upload-audio-play]")
-  const source = uploadAudio.querySelector("source")
-
-  uploadAudioInput.addEventListener("change", (e) => {
-    const audio = e.target.files[0];
-    if(audio){
-      source.src = URL.createObjectURL(audio);
-      uploadAudioPlay.load();
-    }
-  })
-}
-//End AUDIO IMG
+  });
+});

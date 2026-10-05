@@ -1,2 +1,9 @@
-footer.footer   
-  | Copyright © 2026 Music App. All rights reserved.
+footer.footer
+  .container
+    div= settings.copyright
+    if settings.email || settings.phone
+      .mt-1
+        if settings.email
+          a(href=`mailto:${settings.email}`)= settings.email
+        if settings.phone
+          span.ml-3= settings.phone

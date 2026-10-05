@@ -1,0 +1,34 @@
+mixin csrfField()
+  input(type="hidden" name="_csrf" value=csrfToken)
+
+mixin field(name, labelText, value, type = "text", isRequired = false)
+  .form-group
+    label(for=name)= labelText
+    input.form-control(id=name name=name type=type value=(value || "") required=isRequired maxlength=(type === "password" ? 128 : 2048) minlength=(type === "password" ? 8 : undefined) autocomplete=(type === "password" ? (name === "currentPassword" || name === "password" ? "current-password" : "new-password") : undefined))
+
+mixin statusField(value = "active")
+  .form-group
+    label(for="status") Trạng thái
+    select.form-control(id="status" name="status" required)
+      option(value="active" selected=value === "active") Hoạt động
+      option(value="inactive" selected=value === "inactive") Dừng hoạt động
+
+mixin filters(action)
+  form.form-inline.mb-3(action=action method="GET")
+    input.form-control.mr-2.mb-2(name="keyword" placeholder="Tìm theo tên..." value=keyword maxlength="100")
+    select.form-control.mr-2.mb-2(name="status")
+      option(value="") Tất cả trạng thái
+      option(value="active" selected=selectedStatus === "active") Hoạt động
+      option(value="inactive" selected=selectedStatus === "inactive") Dừng hoạt động
+    button.btn.btn-primary.mb-2(type="submit") Tìm kiếm
+
+mixin deleteForm(action)
+  form.d-inline.js-confirm(action=`${action}?_method=DELETE` method="POST" data-confirm="Bạn chắc chắn muốn xóa mục này?")
+    +csrfField()
+    button.btn.btn-danger.btn-sm.ml-1(type="submit") Xóa
+
+mixin statusForm(action, value)
+  form.d-inline(action=`${action}?_method=PATCH` method="POST")
+    +csrfField()
+    input(type="hidden" name="status" value=value === "active" ? "inactive" : "active")
+    button.btn.btn-sm(type="submit" class=value === "active" ? "btn-outline-success" : "btn-outline-secondary")= value === "active" ? "Hoạt động" : "Dừng hoạt động"

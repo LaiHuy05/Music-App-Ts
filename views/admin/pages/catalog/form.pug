@@ -1,0 +1,19 @@
+extends ../../layouts/default.pug
+
+block main
+  h1= pageTitle
+  form.card.card-body(action=(record ? `${basePath}/edit/${record.id}?_method=PATCH` : `${basePath}/create`) method="POST" enctype="multipart/form-data")
+    +csrfField()
+    +field(nameField, nameField === "title" ? "Tiêu đề" : "Tên ca sĩ", record && record[nameField], "text", true)
+    .form-group(upload-image)
+      label(for="avatar") Ảnh đại diện
+      input.form-control-file(type="file" name="avatar" id="avatar" accept="image/jpeg,image/png,image/webp,image/gif" upload-image-input)
+      img.image-preview(src=record ? (record.avatar || record.avtar || settings.logo) : settings.logo alt="Ảnh xem trước" upload-image-preview)
+    +field("avatarUrl", "Hoặc nhập URL ảnh", "", "url")
+    .form-group
+      label(for="description") Mô tả
+      textarea.form-control(id="description" name="description" rows="5" textarea-mce)= record ? record.description : ""
+    +statusField(record ? record.status : "active")
+    .form-group.mb-0
+      button.btn.btn-primary(type="submit") Lưu
+      a.btn.btn-secondary.ml-2(href=basePath) Quay lại

@@ -7,22 +7,25 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const mongoose_slug_updater_1 = __importDefault(require("mongoose-slug-updater"));
 mongoose_1.default.plugin(mongoose_slug_updater_1.default);
 const songSchema = new mongoose_1.default.Schema({
-    title: String,
+    title: { type: String, required: true, trim: true },
     avatar: String,
     description: String,
     singerId: String,
     topicId: String,
     like: {
         type: Number,
+        min: 0,
         default: 0
     },
+    likedBy: { type: [String], default: [], select: false },
     listen: {
         type: Number,
+        min: 0,
         default: 0
     },
     lyrics: String,
     audio: String,
-    status: String,
+    status: { type: String, enum: ["active", "inactive"], default: "active" },
     slug: {
         type: String,
         slug: "title",

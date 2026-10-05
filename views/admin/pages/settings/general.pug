@@ -1,0 +1,18 @@
+extends ../../layouts/default.pug
+
+block main
+  h1= pageTitle
+  form.card.card-body(action=`/${prefixAdmin}/settings/general?_method=PATCH` method="POST")
+    +csrfField()
+    fieldset(disabled=!can("settings_edit"))
+      +field("websiteName", "Tên website", settings.websiteName, "text", true)
+      +field("logo", "URL logo (hoặc đường dẫn /images/...)", settings.logo)
+      .form-group
+        label(for="description") Giới thiệu
+        textarea.form-control(name="description" id="description" rows="4")= settings.description
+      +field("email", "Email liên hệ", settings.email, "email")
+      +field("phone", "Số điện thoại", settings.phone)
+      +field("address", "Địa chỉ", settings.address)
+      +field("copyright", "Nội dung chân trang", settings.copyright)
+      if can("settings_edit")
+        button.btn.btn-primary(type="submit") Lưu cài đặt

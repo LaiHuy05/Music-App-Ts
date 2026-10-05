@@ -1,17 +1,12 @@
 header.header
   .container-fluid
     .row.align-items-center
-      .col-3
+      .col-4
         .inner-logo
-          a(href=`/${prefixAdmin}/dashboard`) ADMIN
-
-      .col-9
-        div(class="text-right")
-          a(
-            href=`/${prefixAdmin}/my-account`
-            class="btn btn-primary btn-sm mr-2"
-          ) Le Van A
-          a(
-            href=`/${prefixAdmin}/auth/logout`
-            class="btn btn-danger btn-sm"
-          ) Đăng xuất
+          a(href=`/${prefixAdmin}`) #{settings.websiteName} · Admin
+      .col-8.text-right
+        a.btn.btn-outline-light.btn-sm.mr-2(href="/" target="_blank" rel="noopener") Xem website
+        a.btn.btn-primary.btn-sm.mr-2(href=`/${prefixAdmin}/my-account`)= currentAdmin.fullName
+        form.d-inline(action=`/${prefixAdmin}/auth/logout` method="POST")
+          +csrfField()
+          button.btn.btn-danger.btn-sm(type="submit") Đăng xuất

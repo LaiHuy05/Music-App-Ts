@@ -5,22 +5,25 @@ mongoose.plugin(slug)
 
 const songSchema = new mongoose.Schema(
   {
-    title: String,
+    title: { type: String, required: true, trim: true },
     avatar: String,
     description: String,
     singerId: String,
     topicId: String,
     like: {
       type: Number,
+      min: 0,
       default: 0
     },
+    likedBy: { type: [String], default: [], select: false },
     listen: {
       type: Number,
+      min: 0,
       default: 0
     },
     lyrics: String,
     audio: String,
-    status: String,
+    status: { type: String, enum: ["active", "inactive"], default: "active" },
     slug: {
       type: String,
       slug:"title",

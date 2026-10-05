@@ -1,0 +1,24 @@
+extends ../../layouts/default.pug
+
+block main
+  .container.my-4
+    .client-profile.card.card-body
+      h1.h3.mb-4 Thông tin cá nhân
+      form(action="/user/info?_method=PATCH" method="POST" enctype="multipart/form-data")
+        +csrfField()
+        +field("fullName", "Họ tên", user.fullName, "text", true)
+        .form-group
+          label Email đăng nhập
+          input.form-control(type="email" value=user.email readonly)
+        +field("phone", "Số điện thoại", user.phone)
+        .form-group(upload-image)
+          label(for="avatar") Ảnh đại diện
+          input.form-control-file(id="avatar" name="avatar" type="file" accept="image/jpeg,image/png,image/webp,image/gif" upload-image-input)
+          img.profile-avatar.mt-2(src=user.avatar || settings.logo alt=user.fullName upload-image-preview)
+        +field("avatarUrl", "Hoặc nhập URL ảnh", "", "url")
+        h2.h5.mt-4 Đổi mật khẩu
+        p.text-muted Để trống các ô mật khẩu nếu chỉ sửa thông tin cá nhân.
+        +field("currentPassword", "Mật khẩu hiện tại", "", "password")
+        +field("newPassword", "Mật khẩu mới", "", "password")
+        +field("confirmPassword", "Nhập lại mật khẩu mới", "", "password")
+        button.btn.btn-primary(type="submit") Lưu thay đổi

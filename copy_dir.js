@@ -1,21 +1,9 @@
 const fs = require("fs-extra");
 
-const listFolderCopy = [
-  {
-    sourceDirectory: "views",
-    targetDirectory: "dist/views"
-  }, {
-    sourceDirectory: "public",
-    targetDirectory: "dist/public"
-  }
-];
-
-listFolderCopy.forEach(item => {
-  fs.copy(item.sourceDirectory, item.targetDirectory, (err) => {
-    if(err) {
-      console.error(`Lỗi sao chép thư mục ${item.sourceDirectory}:`, err);
-    } else {
-      console.log(`Sao chép thành công thư mục ${item.sourceDirectory}`);
-    }
-  })
-})
+(async () => {
+  await Promise.all(["views", "public"].map(folder => fs.copy(folder, "dist/" + folder)));
+  console.log("Đã sao chép views và public vào dist.");
+})().catch(error => {
+  console.error("Không tạo được thư mục build:", error.message);
+  process.exitCode = 1;
+});

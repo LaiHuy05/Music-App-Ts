@@ -1,46 +1,32 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadFields = exports.uploadSinger = void 0;
 const uploadToCloudinary_1 = require("../../helpers/uploadToCloudinary");
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
-const uploadSinger = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const http_1 = require("../../helpers/http");
+const uploadFile = async (file) => {
+    if (file.mimetype.startsWith("image/") && file.size > 5 * 1024 * 1024)
+        throw new http_1.HttpError(400, "Ảnh không được vượt quá 5 MB.");
+    if (!process.env.CLOUD_NAME || !process.env.CLOUD_KEY || !process.env.CLOUD_SECRET)
+        throw new http_1.HttpError(503, "Chưa cấu hình Cloudinary để tải tệp lên.");
     try {
-        const result = yield (0, uploadToCloudinary_1.uploadToCloudinary)(req["file"].buffer);
-        req.body[req["file"].fieldname] = result;
+        return await (0, uploadToCloudinary_1.uploadToCloudinary)(file.buffer);
     }
-    catch (error) {
-        console.log(error);
+    catch {
+        throw new http_1.HttpError(502, "Tải tệp lên thất bại. Vui lòng thử lại.");
     }
+};
+const uploadSinger = async (req, _res, next) => {
+    if (!req.file)
+        throw new http_1.HttpError(400, "Vui lòng chọn tệp.");
+    req.body[req.file.fieldname] = await uploadFile(req.file);
     next();
-});
+};
 exports.uploadSinger = uploadSinger;
-const uploadFields = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    for (const key in req["files"]) {
-        req.body[key] = [];
-        const array = req["files"][key];
-        for (const item of array) {
-            try {
-                const result = yield (0, uploadToCloudinary_1.uploadToCloudinary)(item.buffer);
-                req.body[key].push(result);
-            }
-            catch (error) {
-                console.log(error);
-            }
-        }
+const uploadFields = async (req, _res, next) => {
+    if (req.files && !Array.isArray(req.files)) {
+        for (const [field, files] of Object.entries(req.files))
+            req.body[field] = await Promise.all(files.map(uploadFile));
     }
     next();
-});
+};
 exports.uploadFields = uploadFields;

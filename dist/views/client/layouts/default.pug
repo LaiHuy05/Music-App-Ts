@@ -1,27 +1,24 @@
-doctype html 
-html 
-  head 
-    title #{pageTitle}
-
-    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css")
-    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css")
-
-    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css")
-
-    link(rel="stylesheet", href="/css/style.css")
-
-  body 
-  
+include ../../shared/forms.pug
+doctype html
+html(lang="vi")
+  head
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(name="csrf-token" content=csrfToken)
+    title #{pageTitle} - #{settings.websiteName}
+    link(rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css")
+    link(rel="stylesheet" href="/vendor/fontawesome/css/all.min.css")
+    link(rel="stylesheet" href="/vendor/aplayer/APlayer.min.css")
+    link(rel="stylesheet" href="/css/style.css")
+  body
     include ../partials/header.pug
-    main(class="main")
-      block main 
-
+    main.main
+      if message
+        .container.mt-3
+          .alert.alert-success(role="status")= message
+      block main
     include ../partials/footer.pug
-
-
-    script(src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js")
-    script(src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js") 
-
-    script(src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js") 
-
-    script(src="/js/script.js") 
+    script(src="/vendor/jquery/jquery.slim.min.js")
+    script(src="/vendor/bootstrap/js/bootstrap.bundle.min.js")
+    script(src="/vendor/aplayer/APlayer.min.js")
+    script(src="/js/script.js")

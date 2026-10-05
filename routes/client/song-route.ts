@@ -1,18 +1,12 @@
 import { Router } from "express";
-
-const router: Router = Router();
-
 import * as controller from "../../controllers/client/song-controller";
+import { requireUser } from "../../middlewares/auth.middleware";
+import { csrfProtection, authRateLimit } from "../../middlewares/security.middleware";
 
-
-router.get("/:slugTopic", controller.list);
-
-router.get("/detail/:slugSong", controller.detail);
-
-router.patch("/like/:typeLike/:idSong", controller.like);
-
-router.patch("/favorite/:typeFavorite/:idSong", controller.favorite);
-
-router.patch("/listen/:idSong", controller.listen);
-
-export const songRoutes: Router = router;
+export const songRoutes = Router();
+songRoutes.use(csrfProtection);
+songRoutes.get("/detail/:slugSong", controller.detail);
+songRoutes.patch("/like/:typeLike/:idSong", requireUser, controller.like);
+songRoutes.patch("/favorite/:typeFavorite/:idSong", requireUser, controller.favorite);
+songRoutes.patch("/listen/:idSong", authRateLimit("listen", 100), controller.listen);
+songRoutes.get("/:slugTopic", controller.list);

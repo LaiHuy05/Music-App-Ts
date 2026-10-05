@@ -1,0 +1,16 @@
+extends ../../layouts/default.pug
+
+block main
+  h1= pageTitle
+  .card.card-body
+    img.image-preview.mb-3(src=record.avatar || settings.logo alt=record.fullName)
+    p Họ tên: #{record.fullName}
+    p Email: #{record.email}
+    p Số điện thoại: #{record.phone || "Chưa cập nhật"}
+    p Trạng thái: #{record.status === "active" ? "Hoạt động" : "Dừng hoạt động"}
+    if resource === "accounts"
+      p Nhóm quyền: #{record.isSuperAdmin ? "Quản trị cao nhất" : (role ? role.title : "Chưa phân quyền")}
+    .mt-3
+      if can(`${resource}_edit`) && (!record.isSuperAdmin || record.id === currentAdmin.id)
+        a.btn.btn-warning.mr-2(href=`${basePath}/edit/${record.id}`) Sửa
+      a.btn.btn-secondary(href=basePath) Quay lại

@@ -1,0 +1,14 @@
+import { Router } from "express";
+import * as controller from "../../controllers/admin/role-controller";
+import { requirePermission } from "../../middlewares/auth.middleware";
+import { csrfProtection } from "../../middlewares/security.middleware";
+export const roleRoute = Router();
+roleRoute.use(csrfProtection);
+roleRoute.get("/", requirePermission("roles_view"), controller.index);
+roleRoute.get("/permissions", requirePermission("roles_view"), controller.permissions);
+roleRoute.patch("/permissions", requirePermission("roles_edit"), controller.permissionsPatch);
+roleRoute.get("/create", requirePermission("roles_create"), controller.create);
+roleRoute.post("/create", requirePermission("roles_create"), controller.createPost);
+roleRoute.get("/edit/:id", requirePermission("roles_edit"), controller.edit);
+roleRoute.patch("/edit/:id", requirePermission("roles_edit"), controller.editPatch);
+roleRoute.delete("/delete/:id", requirePermission("roles_delete"), controller.deleteItem);

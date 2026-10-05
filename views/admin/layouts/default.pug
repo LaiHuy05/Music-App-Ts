@@ -1,30 +1,24 @@
-doctype html 
-html 
-  head 
-    title #{pageTitle}
-
-    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css")
-
-    link(rel="stylesheet", href="/admin/css/style.css")
-
-
-  body 
-      include ../partials/header.pug
-
-      .body
-
-        include ../partials/sider.pug
-
-        .main
-          block main 
-
-
-      script(src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js")
-      script(src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js") 
-
-      //- TinyMCE
-      <script src="https://cdn.tiny.cloud/1/f71348pghn6ckp77533cp546xp4rpc36akphhippoo6wh7vv/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
-      script(src="/admin/js/tinymce-config.js") 
-      //-END TinyMCE
-
-      script(src="/admin/js/script.js") 
+include ../../shared/forms.pug
+doctype html
+html(lang="vi")
+  head
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(name="csrf-token" content=csrfToken)
+    meta(name="admin-prefix" content=prefixAdmin)
+    title #{pageTitle} - #{settings.websiteName}
+    link(rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css")
+    link(rel="stylesheet" href="/admin/css/style.css")
+  body
+    include ../partials/header.pug
+    .body
+      include ../partials/sider.pug
+      main.main
+        if message
+          .alert.alert-success(role="status")= message
+        block main
+    script(src="/vendor/jquery/jquery.slim.min.js")
+    script(src="/vendor/bootstrap/js/bootstrap.bundle.min.js")
+    script(src="/tinymce/tinymce.min.js")
+    script(src="/admin/js/tinymce-config.js")
+    script(src="/admin/js/script.js")
